@@ -9,7 +9,7 @@ exclude:
   - "/vendor/"
 
 # Site settings
-title: Loui 블로그
+title: Loui Blog
 subtitle: "A simple yet classy theme for your Jekyll website or blog"
 email: bandi0331@daum.net
 name: Loui kwon 
