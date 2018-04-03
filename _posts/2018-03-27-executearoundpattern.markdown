@@ -32,18 +32,27 @@ java에서 파일을 읽어오거나, jdbc 를 활용하여 db에 crud 작업을
 ***
 
 실제로 코드를 구현해 보면, 초기화/준비 코드와 정리/마무리 코드는 대부분 중복되는 경우가 많고, 우리가 구현이 필요한 부분은 **결국 작업 영역 부분** 입니다.
-
 예를 들면 파일을 한줄만 읽거나, 또는 두줄만 읽거나 , 아니면 db 에서 A라는 테이블에서 데이터를 조회해 오거나, 또는 B라는 테이블에서 조회해 와야 하거나 등등..
-
 이런 경우마다 초기화/준비 코드와 정리/마무리 코드를 모두 구현해서 사용하여 사용하면 중복되는 코드가 많이 발생하겠죠.
 
-이런 경우를 함수형 인터페이스를 생성 후 동작을 파라미터화 하여 활용해 보겠습니다.
+아래와 같이 함수형 인터페이스를 생성 후 동작을 파라미터화 하여 활용해 보겠습니다.
+로컬에서 파일을 읽어 해당 파일의 내용을 라인 단위로 출력하는 예제를 살펴보겠습니다.
 
-{% highlight javascript %}
-function demo(string, times) {
-  for (var i = 0; i < times; i++) {
-    console.log(string);
-  }
-}
-demo("hello, world!", 10);
+일반적으로, 아래와 같은 형태로 구성됩니다.
+
+{% highlight java %}
+    /**
+     * 파일에서 한 행을 읽는 코드.
+     * @return 파일 1라인.
+     * @throws IOException
+     */
+    public static String printFile() throws IOException {
+        //초기화 코드
+        try(BufferedReader br = new BufferedReader(new FileReader("/Users/loui.kwon/documents/example/louikwon-data.txt"))) {
+
+            //실제 작업을 실행하는 부분
+            return br.readLine();
+
+        } //정리 - 마무리 코드
+    }
 {% endhighlight %}
