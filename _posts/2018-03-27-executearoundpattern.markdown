@@ -41,18 +41,19 @@ java에서 파일을 읽어오거나, jdbc 를 활용하여 db에 crud 작업을
 일반적으로, 아래와 같은 형태로 구성됩니다.
 
 {% highlight java %}
-    /**
-     * 파일에서 한 행을 읽는 코드.
-     * @return 파일 1라인.
-     * @throws IOException
-     */
-    public static String printFile() throws IOException {
-        //초기화 코드
-        try(BufferedReader br = new BufferedReader(new FileReader("/Users/loui.kwon/documents/example/louikwon-data.txt"))) {
+/**
+ * 파일에서 한 행을 읽는 코드.
+ * @return 파일 1라인.
+ * @throws IOException
+ */
+public static String printFile() throws IOException {
+    //초기화 코드
+    try (BufferedReader br = new BufferedReader(
+          new FileReader("/Users/loui.kwon/documents/example/louikwon-data.txt"))) {
 
-            //실제 작업을 실행하는 부분
-            return br.readLine();
+        //실제 작업을 실행하는 부분
+        return br.readLine();
 
-        } //정리 - 마무리 코드
-    }
+    } //정리 - 마무리 코드
+}
 {% endhighlight %}
