@@ -39,3 +39,14 @@ java에서 파일을 읽어오거나, jdbc 를 활용하여 db에 crud 작업을
 
 이런 경우를 함수형 인터페이스를 생성 후 동작을 파라미터화 하여 활용해 보겠습니다.
 
+
+{% highlight html %}
+{% raw %}{% highlight javascript %}
+function demo(string, times) {
+  for (var i = 0; i < times; i++) {
+    console.log(string);
+  }
+}
+demo("hello, world!", 10);
+{% endhighlight %}{% endraw %}
+{% endhighlight %}
