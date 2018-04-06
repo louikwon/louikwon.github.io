@@ -27,7 +27,7 @@ java에서 파일을 읽어오거나, jdbc 를 활용하여 db에 crud 작업을
 파일 Stream 을 닫거나, db connection close 등 실제 작업에 대한 마무리 하는 부분.
 
 
-**실행어라운드패턴** 은 위와 같은 형식으로 설정과 정리 두 과정이 둘러싸는 형태의 패턴을 말합니다.
+> **실행어라운드패턴** 은 위와 같은 형식으로 설정과 정리 두 과정이 둘러싸는 형태의 패턴을 말합니다.
 
 ***
 
@@ -66,7 +66,7 @@ public static String printFile() throws IOException {
 
 아래와 같이 함수형 인터페이스를 생성한 후 , 해당 동작만 파라미터로 전달하면 중복된 코드 없이 활용할 수 있습니다.
 
-<pre><code class="java">
+```java
 /**
  * 아래 예제들을 통해서 실행어라운드 패턴을 적용해 보자.
  * 동작을 파라미터화 하기 위해 함수형 인터페이스를 생성
@@ -75,4 +75,37 @@ public static String printFile() throws IOException {
 public interface BufferedReaderProcessor {
     String executeProc(BufferedReader b) throws IOException;
 }
-</code></pre>
+```
+
+```java
+/**
+ * 함수형 인터페이스의 추상 메서드 구현을 직접 전달 가능
+ * @param p 함수형 인터페이스의 추상 메소드 구현체
+ * @return
+ * @throws IOException
+*/
+public static String printFile(BufferedReaderProcessor p) throws IOException {
+    try (BufferedReader br = new BufferedReader(new FileReader("/Users/loui.kwon/documents/example/louikwon-data.txt"))) {
+       return p.executeProc(br);
+    }
+}
+
+```
+
+```java
+@Test
+public void executeAroundPatternTest() throws IOException {
+  //한줄만 읽어야 할 때
+  String result = ExecuteAroundPattern.printFile((BufferedReader br) -> br.readLine());
+
+  Assert.assertEquals("test1" , result );
+
+  //두줄을 읽어야 할 때
+  String resultMultiLine = ExecuteAroundPattern.printFile(
+      (BufferedReader br) -> br.readLine() + br.readLine() );
+
+  Assert.assertEquals("test1test2" , resultMultiLine );
+}
+```
+
+초기화 / 마무리 코드는 함께 사용하고, 필요한 동작만 람다식을 활용하여 넘길 수 있습니다. 
