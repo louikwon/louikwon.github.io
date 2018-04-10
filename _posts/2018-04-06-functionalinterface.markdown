@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Java8에서 제공해주는 함수형 인터페이스의 활용"
-date:   2018-03-27 12:11:59
+date:   2018-04-06 12:11:59
 author: louikwon
 categories: java8
 tags: java8
@@ -11,6 +11,7 @@ tags: java8
 ***
 ### Predicate
 java.util.function.Predicate<T>
+
 test 라는 추상 메서드를 정의하고, test는 제네릭 형식 T의 객체를 인수로 받아 불린을 반환.
 
 활용 : 특정 로직에서 불린 형식으로 체크할 때, 해당 체크 케이스가 다양한 경우.
@@ -53,6 +54,7 @@ public void predicate_실행예제() {
 ***
 ### Consumer ###
 java.util.function.Consumer<T>
+
 제네릭 형식 T 객체를 받아서 void를 반환하는 accept라는 추상메서드를 정의
 
 활용 : void 를 반환하므로, **반환값이 없는 동작을 실행할때 활용** 할 수 있다.
@@ -88,5 +90,45 @@ public void consumer_실행예제() {
 
 ***
 ### Function ###
+java.util.function.Function<T, R>
+
+제네릭 형식 T를 받아서 제네릭 형식 R 객체를 반환하는 apply라는 추상 메서드를 정의
+
+활용 : 반환값이 있는 특정 로직을 전달 받아 해당 정보를 추출
+
+```java
+/**
+   * 제네릭 형식 T를 인수로 받아서 제네릭 형식 R 객체를 반환하는 apply 라는 추상 메서드를 정의.
+   * 입력을 출력으로 매핑하는 람다를 정의 할 때 활용할 수 있다.
+   * String 리스트를 인수로 받아 각 String의 길이를 포함하는 Integer 리스트로 변환하는 map  이라는 메서드를 정의하는 예제
+   * @param list 데이터셋
+   * @param f function
+   * @param <T> 인수 형식
+   * @param <R> 반환형식
+   * @return
+*/
+public static <T,R> List<R> map(List<T> list, Function<T, R> f) {
+    List<R> resultList = new ArrayList<>();
+    for (T s : list) {
+        resultList.add(f.apply(s));
+    }
+    return resultList;
+}
+```
+
+```java
+@Test
+public void function_실행예제() {
+	List<Integer> resultList = FunctionalInterfaceExample.map(
+		Arrays.asList("everton", "sunderland", "leedsunited"),
+			(String s) -> s.length()
+	);
+
+	List<Integer> checkList = Arrays.asList(7, 10, 11);
+
+	Assert.assertEquals(checkList, resultList);
+}
+
+```
 
 ***
