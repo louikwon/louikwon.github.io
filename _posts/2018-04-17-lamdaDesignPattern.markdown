@@ -94,10 +94,40 @@ public void 람다사용한_전략패턴() {
             (String s) -> s.matches("^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$")
     );
     boolean isPhone = phoneNumberValidator.validate("02-1111-1111");
+    boolean isPhone = phoneNumberValidator.validate("02-1111-1111");
 
     Assert.assertTrue(isPhone);
 }
 
 ```
+***
 
+### 템플릿 메서드 패턴
+템플릿 메소드 패턴은 상속을 통해 기능을 확장해서 사용하는 패턴입니다. 
+변하지 않는 부분은 슈퍼클래스에 두고 변하는 부분은 추상 메소드로 정의해둬서 서브클래스에서 오버라이드하여 새롭게 정의해 쓰도록 합니다.
 
+```java
+abstract class Company {
+    public void processEmployee(int id) {
+        Employee employee = Database.getEmployeeById(id);
+        makeEmployeeHappy(employee);
+    }
+
+    abstract void makeEmployeeHappy(Employee employee);
+} 
+```
+회사를 정의하고, 직원들을 행복하게 할 수 있게 각각의 회사는 makeEmployeeHappy 메서드가 원하는 동작을 수행하도록 구현할 수 있습니다.
+
+```java
+//Consumer<Employee> 형식을 갖는 두번째 인수를 추가.
+public void processEmployee(int id, Consumer<Employee> makeEmployeeHappy) {
+    Employee employee = Database.getEmployeeById(id);
+    makeEmployeeHappy.aceept(employee);
+}
+```
+
+Company 클래스를 상속 받지 않고, 직접 람다 표현식을 전달해서 동작을 추가할 수 있습니다. 
+
+```java
+    new CompanyLambda().processEmployee(2000, (Employee e) -> increseSalary());
+```
