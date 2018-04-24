@@ -131,3 +131,61 @@ Company 클래스를 상속 받지 않고, 직접 람다 표현식을 전달해�
 ```java
     new CompanyLambda().processEmployee(2000, (Employee e) -> increseSalary());
 ```
+
+***
+### 팩토리 패턴
+
+인스턴스화 로직을 클라이언트에 노출하지 않고, 객체를 만들고자 할때 팩토리 패턴을 사용합니다.
+팩토리 패턴을 사용하기 위해서는 아래와 같이 객체를 만드는 Factory 클래스가 필요합니다.
+
+```java
+public class DreamFactory {
+    public static Dream createDream(String name) {
+        switch (name) {
+            case "lotto" :
+                return new LottoDream();
+            case "readbook"
+                return new ReadBookDream();
+            default :
+                throw new RuntimeException("No Such Dream " + name);
+        }
+    }
+}
+
+//얻고자 하는 객체를 factory class를 통해 생성.
+Dream dream = DreamFatory.createDream("lotto");
+
+```
+이제 팩토리 패턴을 람다를 활용하여 구현해 보자.
+
+```java
+//꿈 이름을 생성자로 연결하는 map을 생성
+final static Map<String, Supplier<Dream>> map = new HashMap();
+static {
+    map.put("lotto", LottoDream::new);
+    map.put("readbook", ReadBookDream::new);
+}
+
+//Map 을 이용하여 다양한 꿈을 이룰수 있다
+public static Dream crateDream(String name) {
+    Supplier<Dream> d = map.get(name);
+    if (d ! = null) return d.get();
+        throw new IllegalArgumentException("No Search Dream");
+}
+
+```
+
+위에서 살펴본 예제는 인수가 없는 생성자를 통해 객체를 생성하는 경우를 살펴봤습니다. 만약
+여러개의 인수를 인자로 받는 생성자를 통해 팩토리 패턴을 구현해야 한다면, map을 생성시 
+여러 인자를 모두 받아야 하는 번거로움이 생기게 됩니다.
+
+예를 들어 String 2개, Integer 1개의 인자가 필요한 생성자를 통해 객체를 생성해야 한다면, Map의 형태는 아래와 같이 생성해야 합니다. 
+
+```java
+final static Map<String, TriFunction<String, Integer, Dream>> map = new HashMap();
+
+```
+
+개인적인 생각으로는 팩토리 패턴의 경우에는 람다를 활용한 방식 보다는 기존 방식으로 구현하는게 더 명시적이고, 활용하기 좋지 않을까 합니다.
+
+***
