@@ -10,6 +10,7 @@ tags: java8
 
 ***
 ### Comparator
+정렬 할 때 여러 조건을 손쉽게 조합하여 정렬할 수 있습니다.
 
 ```java
 
@@ -50,7 +51,6 @@ public void comparing_조합예제() {
 }
 
 ```
-***
 
 
 ***
@@ -91,10 +91,10 @@ public void predicate_조합예제() {
 
 }   
 ```
-***
+
 
 ***
-###Function
+### Function
 계산식 들을 조합헤서 결과를 추출하는 등의 작업을 할 수 있습니다.
 
 ```java
