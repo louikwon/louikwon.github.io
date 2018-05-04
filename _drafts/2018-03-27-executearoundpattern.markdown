@@ -76,3 +76,34 @@ public interface BufferedReaderProcessor {
     String executeProc(BufferedReader b) throws IOException;
 }
 ```
+
+```java
+/**
+ * 함수형 인터페이스의 추상 메서드 구현을 직접 전달 가능
+ * @param p 함수형 인터페이스의 추상 메소드 구현체
+ * @return
+ * @throws IOException
+*/
+public static String printFile(BufferedReaderProcessor p) throws IOException {
+    try (BufferedReader br = new BufferedReader(new FileReader("/Users/loui.kwon/documents/example/louikwon-data.txt"))) {
+       return p.executeProc(br);
+    }
+}
+
+```
+
+```java
+@Test
+public void executeAroundPatternTest() throws IOException {
+  //한줄만 읽어야 할 때
+  String result = ExecuteAroundPattern.printFile((BufferedReader br) -> br.readLine());
+
+  Assert.assertEquals("test1" , result );
+
+  //두줄을 읽어야 할 때
+  String resultMultiLine = ExecuteAroundPattern.printFile(
+      (BufferedReader br) -> br.readLine() + br.readLine() );
+
+  Assert.assertEquals("test1test2" , resultMultiLine );
+}
+```

@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "람다식을 조합하여 복합한 표현식 만들기"
+title:  "람다식을 조합하여 복잡한 표현식 만들기"
 date:   2018-04-27 12:11:59
 author: louikwon
 categories: java8
