@@ -41,4 +41,53 @@ tags: spring
 그렇다고 해도 Spring 은 인터페이스를 통한 DI , 다양한 DI 활용방법을 사용하도록 권장합니다. 다만 Cglib 프록시를 사용하게 됨으로서 불필요한 인터페이스 구현은 줄일수 있게 되었습니다. 
 
 ***
-이러한 AOP Proxy 방식으로 동작되면서, @Transaction 을 사용할 때 주의해야할 점을 몇가지 살펴 보겠습니다. 
+이러한 AOP Proxy 방식으로 동작되면서, @Transactional 을 사용할 때 주의해야할 점을 몇가지 살펴 보겠습니다. 
+
+- 스프링에서 Transactional 은 인스턴스에서 처음으로 부르는 메서드의 속성(클래스의 속성 포함)을 따라갑니다. 즉 @Transactional 이 적용된 메서드에서 @Transactional 이 적용되지 않은 메서드를 호출할 때는 Transactional 이 적용 됩니다. 
+ 물론 전파 속성에 따라 진행 중인 트랜잭션이 있는 경우 이미 시작된 트랜잭션에 참여할 수 도 있고(PROPAGATION REQUIRED), 이미 진행된 트랜잭션 존재 여부에 관계 없이 항상 새로운 트랜잭션을 시작(PROPAGATION_REQUIRES_NEW) 할 수도 있습니다.
+
+```java
+ // 예제 소스 코드 추가 예정 
+```
+
+
+
+- @Transactional이 적용되지 않은 메서드에서 적용된 메서드를 호출하면 Transaction이 무시됩니다. 
+
+```java
+ // 예제 소스 코드 추가 예정 
+```
+
+
+
+- @Transactional(readOnly = true) 가 적용된 메서드에서 @Transactional 혹은 @Transactional(readOnly = false)가 적용된 메서드를 호출 할 경우 무조건 read-only Transaction이 적용된다. (mysql 은 5.6.5 버전부터 readOnly를 지원하므로, 이전 버전에서는 CUD 를 할 경우 에러가 발생하지 않는다.) 
+
+ 만약 @Transactional 혹은 @Transactional(readOnly = false)가 적용된 메서드에서 @Transactional(readOnly = true) 를 호출할 경우에는 처음 시작될 때 속성으로 진행 되므로, readOnly 속성이 적용되지 않습니다.
+
+ ```java
+ // 예제 소스 코드 추가 예정 
+```
+
+
+
+
+- @Transactional 의 경우 AOP 프록시를 사용하므로 클라이언트로부터 호출이 일어날 때만 적용됩니다. 여기서 클라이언트라 함은 인터페이스를 통해 타깃 오브젝트를 사용하는 다른 모든 오브젝트를 말합니다. 
+ 
+  여기서 주의할 점음 클라이언트로 부터 호출이 일어날 때만 적용되므로, 타깃 오브젝트가 자기 자신의 메소드를 호출할 때에는 프록시를 통한 부가기능의 적용이 일어나지 않습니다. 즉 같은 타깃 오브젝트안에서 호출할 경우 트랜잭션이 무시됩니다. 
+
+  단, AspectJ와 같은 타깃의 바이트코드를 직접 조작하는 방식의 AOP 에서는 같은 타깃 오브젝트내에서의 호출시에도 트랜잭션이 적용됩니다.
+
+
+
+
+- *Spring 에서 Transaction 사용시 롤백 여부는 Unchecked Exception (Runtime Exception) 이 발생했는지 여부에 따라 결정됩니다.* 런타임 예외가 아닌 체크 예외를 던지는 경우에는 이것을 예외 상황으로 인식하지 않고 일종의 비즈니스 로직에 따른 의미가 있는 리턴 방식의 한가지로 인식해서 트랜잭션을 커밋해 버립니다. 
+
+  비즈니스적인 의미가 있는 예외 상황만 체크 예외를 사용하고, 그 외의 모든 복구 불가능한 순수한 예외의 경우는 런타임 예외로 포장되어 전달한다는 기본적인 예외 처리 원칙을 스프링은 따른다고 가정합니다.
+
+  만약 런타임 예외가 아는 체크 예외를 던지는 경우에도 롤백이 필요하다고 한다면, 아래와 같이 전파방식을 설정해야 합니다.
+
+```java
+
+@Transactional(rollbackFor = Exception.class)
+
+```
